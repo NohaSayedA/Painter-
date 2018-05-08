@@ -8,6 +8,7 @@
 #include <iostream>
 #include "menu.h"
 #include "Shape.h"
+#include "Line.h"
 #include "Circle.h"
 #define MAX_LOADSTRING 100
 using namespace std;
@@ -23,9 +24,7 @@ LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 LPARAM first;
 
-vector<LPARAM> points;
-//vector<Point> lines;
-int numberofpoints = 0;
+vector<Point> lines;
 int shape = -1;
 bool check = false;
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
@@ -69,7 +68,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 
 
-//
+//[
 //  FUNCTION: MyRegisterClass()
 //
 //  PURPOSE: Registers the window class.
@@ -135,48 +134,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY	- post a quit message and return
 //
 //
-void DrawLineDDA(int XS, int YS, int XE, int YE, HDC  hdc, COLORREF color){
-	int dx = XE - XS, dy = YE - YS;
-	if (dx == 0 && dy == dx){
-		SetPixel(hdc, XS, YS, color);
-		return;
-	}
-	if (abs(dy) <= abs(dx)){
-		if (XS>XE){
-			swap(YS, YE);
-			swap(XS, XE);
-			dx *= -1;
-			dy = YE - YS;
-		}
-		double slope = (double)dy / dx;
-		int x = XS;
-		double y = YS;
-		while (x <= XE)
-		{
-			SetPixel(hdc, x, round(y), color);
-			x++;
-			y += slope;
-
-		}
-	}
-	else{
-		if (YS>YE){
-			swap(YS, YE);
-			swap(XS, XE);
-			dy *= -1;
-			dx = XE - XS;
-		}
-		double slope = (double)dx / dy;
-		double x = XS;
-		int y = YS;
-		while (y <= YE)
-		{
-			SetPixel(hdc, round(x), y, color);
-			y++;
-			x += slope;
-		}
-	}
-}
 union outcode
 {
 	unsigned All : 4;
@@ -185,90 +142,7 @@ union outcode
 		unsigned left : 1, top : 1, right : 1, bottom : 1;
 	};
 };
-void DrawLineMidPoint(HDC hdc, int xs, int ys, int xe, int ye,COLORREF color){
-	int dx = xe - xs;
-	int dy = ye - ys;
-	if (abs(dy) <= abs(dx)) // slope less than 1
-	{
-		if (xe < xs)
-		{
-			swap(xe, xs);
-			swap(ye, ys);
-			dx = -dx;
-			dy = -dy;
-		}
-		int d = dx - abs(2 * dy);
-		int c1 = 2 * dx - abs(2 * dy);
-		int c2= -2 * abs(dy);
-		int x = xs;
-		int y = ys;
-		while (x<=xe)
-		{
-			SetPixel(hdc, x, y, color);
-			if (d <= 0)
-			{
-				d += c1;
-				//to check if y decrease or increase
-				y = (dy > 0) ? y + 1 : y - 1;
-			}
-			else  d += c2;
-			x++;
-
-		}
-	}
-	else
-	{
-		if (dy < 0)
-		{
-			swap(ye, ys);
-			swap(xe, xs);
-			dy = -dy;
-			dx = -dx;
-		}
-		int d = dy - abs(2 * dx);
-		int c1 = 2 * dy - abs(2 * dx);
-		int c2 = -2 * abs(dx);
-
-		int y = ys;
-		int x = xs;
-		while (y<=ye)
-		{
-			SetPixel(hdc, x, y, color);
-			if (d <= 0)
-			{
-				d += c1;
-				x = (dx > 0) ? x + 1 : x - 1;
-
-			}
-			else  d += c2;
-			y++;
-		}
-	}
-}
-/*void Draw8Points(int x, int y, int xc, int yc, COLORREF color, HDC hdc)
-{
-	SetPixel(hdc, xc + x, yc + y, color);
-	SetPixel(hdc, xc - x, yc + y, color);
-	SetPixel(hdc, xc - x, yc - y, color);
-	SetPixel(hdc, xc + x, yc - y, color);
-	SetPixel(hdc, xc + y, yc + x, color);
-	SetPixel(hdc, xc - y, yc + x, color);
-	SetPixel(hdc, xc - y, yc - x, color);
-	SetPixel(hdc, xc + y, yc - x, color);
-}
-void DrawCircleCartesian(HDC hdc, int xc, int yc, int xr, int yr, COLORREF color)
-{
-	int R = sqrt(pow((xr - xc), 2) + pow((yr - yc), 2));
-	int x = 0, y = R;
-	Draw8Points(x, y, xc, yc, color, hdc);
-	while (x < y)
-	{
-		x++;
-		y = sqrt(pow(R, 2) - pow(x, 2));
-		Draw8Points(x, y, xc, yc, color, hdc);
-	}
-	}*//**/
-/*outcode GetOutCode(int x, int y, int left, int top, int right, int bottom)
+outcode GetOutCode(int x, int y, int left, int top, int right, int bottom)
 {
 	outcode Out;
 	Out.All = 0;
@@ -298,10 +172,10 @@ Point hintersected(int edge, int xs, int ys, int xe, int ye)
 	double slope = (double)(xe - xs) / (ye - ys);
 	n.x = xs + (edge - ys)* (double)slope;
 	return n;
-}*/
+}
 void ClippingLine(HDC hdc, COLORREF color, int xs, int ys, int xe, int ye, int left, int right, int top, int bottom)
 {
-	/*outcode out1 = GetOutCode(xs, ys, left, top, right, bottom);
+	outcode out1 = GetOutCode(xs, ys, left, top, right, bottom);
 	outcode out2 = GetOutCode(xe, ye, left, top, right, bottom);
 	while ((out1.All != 0 || out2.All != 0) && !(out1.All&out2.All))
 	{
@@ -338,7 +212,11 @@ void ClippingLine(HDC hdc, COLORREF color, int xs, int ys, int xe, int ye, int l
 	}
 	if (out1.All == 0 && out2.All == 0)
 	{
-		DrawLineMidPoint(hdc, xs, ys, xe, ye, color);
+		Line l;
+		l.hdc = hdc;
+		l.start = { xs, ys };
+		l.end = { xe, ye };
+		l.DrawDDA(RGB(0, 255, 255));
 		Point start;
 		start.x = xs;
 		start.y = ys;
@@ -347,17 +225,14 @@ void ClippingLine(HDC hdc, COLORREF color, int xs, int ys, int xe, int ye, int l
 		end.y = ye;
 		lines.push_back(start);
 		lines.push_back(end);
-	}*/
+	}
 }
-void ClippingLines(HDC hdc, COLORREF color)
+void ClippingLines(HDC hdc, COLORREF color,LPARAM lparam)
 {
-	/*int left = LOWORD(points.front());
-	points.erase(points.begin());
-	int right = LOWORD(points.front());
-	points.erase(points.begin());
-	int top = HIWORD(points.front());
-	points.erase(points.begin());
-	int bottom = HIWORD(points.front());
+	int left = LOWORD(first);
+	int right = LOWORD(lparam);
+	int top = HIWORD(first);
+	int bottom = HIWORD(lparam);
 	int size = lines.size();
 	while (size)
 	{
@@ -367,29 +242,14 @@ void ClippingLines(HDC hdc, COLORREF color)
 		Point end = lines.front();
 		lines.erase(lines.begin());
 		size--;
-		DrawLineDDA(start.x, start.y, end.x, end.y, hdc, RGB(255, 255, 255));
+		Line l;
+		l.hdc = hdc;
+		l.start = start;
+		l.end = end;
+		l.DrawDDA(RGB(255, 255, 255));
 		ClippingLine(hdc, color, start.x, start.y, end.x, end.y, left, right, top, bottom);
-	}*/
-}
-/*void DrawCircleMidPoint(HDC hdc, int xc, int yc, int xr, int yr, COLORREF color)
-{
-	int R = sqrt(pow((xr - xc), 2) + pow((yr - yc), 2));
-	int x = 0, y = R;
-	int d = 1 - R;
-	//Draw8Points(x, y, xc, yc, color, hdc);
-	while (x < y)
-	{
-		if (d < 0)		d += (2*x + 3);
-		else{
-			d += 2*x - 2*y + 5;
-			y--;
-		}
-		x++;
-		//Draw8Points(x, y, xc, yc, color, hdc);
-
 	}
-
-}*/
+}
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
@@ -420,24 +280,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case Circle_Polar:
 			shape = 6;
 			break;
+		case Line_Cartesian:
+			shape = 7;
+			break;
 		}
 		break;
 
 	case WM_LBUTTONDOWN:
-		if (shape == 5)
-		{
-			if (points.size() == 3)
-			{
-				hdc = GetDC(hWnd);
-				points.push_back(lParam);
-				ClippingLines(hdc, RGB(0, 0, 240));
-				points.clear();
-			}
-			else
-				points.push_back(lParam);
-		}
-		else
-		{
+		
+		
 			if (!check)
 			{
 				check = true;
@@ -447,46 +298,44 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				check = false;
 				hdc = GetDC(hWnd);
-				if (shape == 1){
-					//DrawCircleCartesian(hdc, LOWORD(first), HIWORD(first), LOWORD(lParam), HIWORD(lParam), RGB(0, 244, 255));
+				if (shape == 5){
+					ClippingLines(hdc, RGB(0, 100, 200), lParam);
+				}
+				else if (shape == 1){
 					Shape* circle = new Circle(hdc, 1, { LOWORD(first), HIWORD(first) }, { LOWORD(lParam), HIWORD(lParam) });
 					circle->draw(RGB(0, 244, 255));
 				}
 				else if (shape == 2){
-					//DrawCircleMidPoint(hdc, LOWORD(first), HIWORD(first), LOWORD(lParam), HIWORD(lParam), RGB(200, 0, 255));
-				}
-				else if (shape == 3)
-				{
-					/*DrawLineDDA(LOWORD(first), HIWORD(first), LOWORD(lParam), HIWORD(lParam), hdc, RGB(0, 0, 255));
-					Point start;
-					start.x = LOWORD(first);
-					start.y = HIWORD(first);
-					Point end;
-					end.x = LOWORD(lParam);
-					end.y = HIWORD(lParam);
-					lines.push_back(start);
-					lines.push_back(end);*/
-				}
-				else if (shape == 4)
-				{
-					/*DrawLineMidPoint(hdc, LOWORD(first), HIWORD(first), LOWORD(lParam), HIWORD(lParam), RGB(255, 0, 0));
-					Point start;
-					start.x = LOWORD(first);
-					start.y = HIWORD(first);
-					Point end;
-					end.x = LOWORD(lParam);
-					end.y = HIWORD(lParam);
-					lines.push_back(start);
-					lines.push_back(end);*/
+					Shape* circle = new Circle(hdc, 2, { LOWORD(first), HIWORD(first) }, { LOWORD(lParam), HIWORD(lParam) });
+					circle->draw(RGB(0, 100, 255));
 				}
 				else if (shape == 6)
 				{
 					Shape* circle = new Circle(hdc, 3, { LOWORD(first), HIWORD(first) }, { LOWORD(lParam), HIWORD(lParam) });
-					
 					circle->draw(RGB(255, 0, 0));
 				}
+				else if (shape == 3)
+				{
+					Point start = { LOWORD(first), HIWORD(first) };
+					Point end = { LOWORD(lParam), HIWORD(lParam) };
+					lines.push_back(start);
+					lines.push_back(end);
+					Shape* line = new Line(hdc, 1, { LOWORD(first), HIWORD(first) }, { LOWORD(lParam), HIWORD(lParam) });
+					line->draw(RGB(0, 100, 255));
+				}
+				else if (shape == 4)
+				{
+					Shape* line = new Line(hdc, 2, { LOWORD(first), HIWORD(first) }, { LOWORD(lParam), HIWORD(lParam) });
+					line->draw(RGB(0, 244, 255));
+				}
+
+				else if (shape == 7)
+				{
+					Shape* line = new Line(hdc, 3, { LOWORD(first), HIWORD(first) }, { LOWORD(lParam), HIWORD(lParam) });
+					line->draw(RGB(255, 0, 0));
+				}
 			}
-		}
+		break;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 		// TODO: Add any drawing code here...

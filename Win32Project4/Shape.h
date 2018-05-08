@@ -5,7 +5,8 @@ struct Point{
 class Shape
 {
 public:
-	
+	HDC hdc;
+	int algorithm;
 	Shape();
 	Shape(HDC, int,Point,Point);
 	virtual void draw(COLORREF ) = 0;

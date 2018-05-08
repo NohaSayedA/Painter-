@@ -1,8 +1,14 @@
 #include "Shape.h"
 
-class line : public Shape
+class Line : public Shape
 {
 public:
-	line();
-	~line();
+	Point start, end;
+	Line();
+	Line(HDC, int, Point, Point);
+	void draw(COLORREF);
+	void DrawMidPoint(COLORREF);
+	void DrawDDA(COLORREF);
+	void DrawDirect(COLORREF);
+	~Line();
 };

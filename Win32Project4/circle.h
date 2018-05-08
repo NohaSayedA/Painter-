@@ -3,11 +3,8 @@
 class Circle :
 	public Shape
 {
-	HDC hdc;
-	int algorithm;
 public:
-	Point center;
-	Point r;
+	Point center,r;
 	Circle();
 	Circle(HDC hdc, int choice,Point,Point);
 	void draw(COLORREF );

@@ -10,8 +10,9 @@ END
 
 POPUP "&Line"
 BEGIN
-MENUITEM "&LineMidPoint", Line_DDA
-MENUITEM "&LineDDA", Line_MidPoint
+MENUITEM "&Direct Line", Line_Cartesian
+MENUITEM "&LineMidPoint", Line_MidPoint
+MENUITEM "&LineDDA", Line_DDA
 END
 
 POPUP "&Clipping"
