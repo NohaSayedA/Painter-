@@ -1,0 +1,21 @@
+#include "menu.h"
+IDR_MYMENU MENU
+BEGIN
+POPUP "&Circle"
+BEGIN
+MENUITEM "&Circle Cartesian", Circle_Cartesian
+MENUITEM "&Circle MidPoint", Circle_MidPoint
+MENUITEM "&Circle_Polar", Circle_Polar
+END
+
+POPUP "&Line"
+BEGIN
+MENUITEM "&LineMidPoint", Line_DDA
+MENUITEM "&LineDDA", Line_MidPoint
+END
+
+POPUP "&Clipping"
+BEGIN
+MENUITEM "&Line Clipping", Line_Clipping
+END
+END
