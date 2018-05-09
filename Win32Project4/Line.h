@@ -3,7 +3,7 @@
 class Line : public Shape
 {
 public:
-	Point start, end;
+	
 	Line();
 	Line(HDC, int, Point, Point);
 	void draw(COLORREF);

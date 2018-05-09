@@ -5,6 +5,7 @@ struct Point{
 class Shape
 {
 public:
+	Point start, end;
 	HDC hdc;
 	int algorithm;
 	Shape();

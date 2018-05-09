@@ -14,7 +14,10 @@ MENUITEM "&Direct Line", Line_Cartesian
 MENUITEM "&LineMidPoint", Line_MidPoint
 MENUITEM "&LineDDA", Line_DDA
 END
-
+POPUP "&Filling"
+BEGIN
+MENUITEM "&Flood Fill", filling_ID
+END
 POPUP "&Clipping"
 BEGIN
 MENUITEM "&Line Clipping", Line_Clipping

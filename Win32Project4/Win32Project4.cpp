@@ -7,9 +7,7 @@
 #include <vector>
 #include <iostream>
 #include "menu.h"
-#include "Shape.h"
-#include "Line.h"
-#include "Circle.h"
+#include "Painter.h"
 #define MAX_LOADSTRING 100
 using namespace std;
 // Global Variables:
@@ -23,7 +21,7 @@ BOOL				InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 LPARAM first;
-
+Painter* painter;
 vector<Point> lines;
 int shape = -1;
 bool check = false;
@@ -50,7 +48,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	{
 		return FALSE;
 	}
-
+	painter = new Painter();
 	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_WIN32PROJECT4));
 
 	// Main message loop:
@@ -134,7 +132,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY	- post a quit message and return
 //
 //
-union outcode
+/*union outcode
 {
 	unsigned All : 4;
 	struct 
@@ -249,7 +247,7 @@ void ClippingLines(HDC hdc, COLORREF color,LPARAM lparam)
 		l.DrawDDA(RGB(255, 255, 255));
 		ClippingLine(hdc, color, start.x, start.y, end.x, end.y, left, right, top, bottom);
 	}
-}
+}*/
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
@@ -283,6 +281,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case Line_Cartesian:
 			shape = 7;
 			break;
+		case filling_ID:
+			shape = 8;
+			break;
 		}
 		break;
 
@@ -293,11 +294,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				check = true;
 				first = lParam;
+				if (shape == 8)
+				{
+					check = false;
+					hdc = GetDC(hWnd);
+					painter->operate(hWnd,shape, hdc, first, NULL);
+				}
 			}
 			else
 			{
 				check = false;
 				hdc = GetDC(hWnd);
+				painter->operate(hWnd,shape,hdc,first,lParam);
+				/*hdc = GetDC(hWnd);
 				if (shape == 5){
 					ClippingLines(hdc, RGB(0, 100, 200), lParam);
 				}
@@ -333,7 +342,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				{
 					Shape* line = new Line(hdc, 3, { LOWORD(first), HIWORD(first) }, { LOWORD(lParam), HIWORD(lParam) });
 					line->draw(RGB(255, 0, 0));
-				}
+				}*/
 			}
 		break;
 	case WM_PAINT:

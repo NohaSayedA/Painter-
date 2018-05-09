@@ -35,10 +35,10 @@ void Circle::DrawPolar(COLORREF color)
 	double theta = 90, d = (1.0 / R);
 	while (x<=y)
 	{
+		Draw8Points(x, y, center.x, center.y, color);
 		theta -= d;
 		x = round(R*cos(theta));
 		y = round(R*sin(theta));
-		Draw8Points(x, y, center.x, center.y, color);
 	}
 }
 void Circle::DrawMidPoint( COLORREF color)
@@ -48,13 +48,13 @@ void Circle::DrawMidPoint( COLORREF color)
 	int d = 1 - R;
 	while (x <= y)
 	{
+		Draw8Points(x, y, center.x, center.y, color);
 		if (d < 0)		d += (2 * x + 3);
 		else{
 			d += 2 * x - 2 * y + 5;
 			y--;
 		}
 		x++;
-		Draw8Points(x, y, center.x,center.y, color);
 	}
 }
 void Circle:: Draw8Points(int x, int y, int xc, int yc, COLORREF color)
@@ -74,9 +74,9 @@ void Circle ::  DrawCartesian( COLORREF color)
 	int x = 0, y = R;
 	while (x <= y)
 	{
+		Draw8Points(x, y, center.x, center.y, color);
 		x++;
 		y = sqrt(pow(R, 2) - pow(x, 2));
-		Draw8Points(x, y, center.x, center.y, color);
 	}
 }
 
