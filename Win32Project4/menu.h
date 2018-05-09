@@ -7,6 +7,8 @@
 #define Circle_MidPoint 1260
 #define filling_ID 1232
 #define Circle_Polar 1256
+#define Curve_Hermit 1301
 #define Line_DDA 1262
+#define Curve_Bezier 1302
 #define Line_Cartesian 1222
 #define Line_MidPoint 1300

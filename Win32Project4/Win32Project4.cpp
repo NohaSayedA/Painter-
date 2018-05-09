@@ -25,6 +25,7 @@ Painter* painter;
 vector<Point> lines;
 int shape = -1;
 bool check = false;
+vector<LPARAM> pointsForCurve;
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPTSTR    lpCmdLine,
@@ -132,122 +133,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY	- post a quit message and return
 //
 //
-/*union outcode
-{
-	unsigned All : 4;
-	struct 
-	{
-		unsigned left : 1, top : 1, right : 1, bottom : 1;
-	};
-};
-outcode GetOutCode(int x, int y, int left, int top, int right, int bottom)
-{
-	outcode Out;
-	Out.All = 0;
-	if (x < left)
-		Out.left = 1;
-	else if (x>right)
-		Out.right = 1;
-	if (y > bottom)
-		Out.bottom = 1;
-	else if (y< top)
-		Out.top = 1;
-	return Out;
-}
-
-Point vintersected(int edge, int xs, int ys, int xe, int ye)
-{
-	Point n;
-	n.x = edge;
-	double slope = (double)(ye - ys) / (xe - xs);
-	n.y = ys + (edge - xs)* (double)slope;	
-	return n;
-}
-Point hintersected(int edge, int xs, int ys, int xe, int ye)
-{
-	Point n;
-	n.y = edge;
-	double slope = (double)(xe - xs) / (ye - ys);
-	n.x = xs + (edge - ys)* (double)slope;
-	return n;
-}
-void ClippingLine(HDC hdc, COLORREF color, int xs, int ys, int xe, int ye, int left, int right, int top, int bottom)
-{
-	outcode out1 = GetOutCode(xs, ys, left, top, right, bottom);
-	outcode out2 = GetOutCode(xe, ye, left, top, right, bottom);
-	while ((out1.All != 0 || out2.All != 0) && !(out1.All&out2.All))
-	{
-		if (out1.All != 0)
-		{
-			Point N;
-			if (out1.left)
-				 N= vintersected(left, xs, ys, xe, ye);
-			else if (out1.right)
-				 N=vintersected(right, xs, ys, xe, ye);
-			else if (out1.top)
-				 N=hintersected(top, xs, ys, xe, ye);
-			else if (out1.bottom)
-				 N=hintersected(bottom, xs, ys, xe, ye);
-			xs = N.x; 
-			ys = N.y;
-			out1 = GetOutCode(xs, ys, left, top, right, bottom);
-		}
-		else if (out2.All != 0)
-		{
-			Point N;
-			if (out2.left)
-				N = vintersected(left, xs, ys, xe, ye);
-			else if (out2.right)
-				N = vintersected(right, xs, ys, xe, ye);
-			else if (out2.top)
-				N = hintersected(top, xs, ys, xe, ye);
-			else if (out2.bottom)
-				N = hintersected(bottom, xs, ys, xe, ye);
-			xe = N.x;
-			ye = N.y;
-			out2 = GetOutCode(xe, ye, left, top, right, bottom);
-		}
-	}
-	if (out1.All == 0 && out2.All == 0)
-	{
-		Line l;
-		l.hdc = hdc;
-		l.start = { xs, ys };
-		l.end = { xe, ye };
-		l.DrawDDA(RGB(0, 255, 255));
-		Point start;
-		start.x = xs;
-		start.y = ys;
-		Point end;
-		end.x = xe;
-		end.y = ye;
-		lines.push_back(start);
-		lines.push_back(end);
-	}
-}
-void ClippingLines(HDC hdc, COLORREF color,LPARAM lparam)
-{
-	int left = LOWORD(first);
-	int right = LOWORD(lparam);
-	int top = HIWORD(first);
-	int bottom = HIWORD(lparam);
-	int size = lines.size();
-	while (size)
-	{
-		Point start = lines.front();
-		lines.erase(lines.begin());
-		size--;
-		Point end = lines.front();
-		lines.erase(lines.begin());
-		size--;
-		Line l;
-		l.hdc = hdc;
-		l.start = start;
-		l.end = end;
-		l.DrawDDA(RGB(255, 255, 255));
-		ClippingLine(hdc, color, start.x, start.y, end.x, end.y, left, right, top, bottom);
-	}
-}*/
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
@@ -284,66 +169,44 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case filling_ID:
 			shape = 8;
 			break;
+		case Curve_Hermit:
+			shape = 9;
+			break;
+		case Curve_Bezier:
+			shape = 10;
+			break;
 		}
 		break;
 
 	case WM_LBUTTONDOWN:
 		
-		
-			if (!check)
+		if (shape == 9||shape==10)
+		{
+			pointsForCurve.push_back(lParam);
+			if (pointsForCurve.size() == 4)
 			{
-				check = true;
-				first = lParam;
-				if (shape == 8)
-				{
-					check = false;
-					hdc = GetDC(hWnd);
-					painter->operate(hWnd,shape, hdc, first, NULL);
-				}
+				hdc = GetDC(hWnd);
+				painter->operate(hWnd, shape, hdc, first, NULL,pointsForCurve);
+				pointsForCurve.clear();
 			}
-			else
+		}
+		else if (!check)
+		{
+			check = true;
+			first = lParam;
+			if (shape == 8)
 			{
 				check = false;
 				hdc = GetDC(hWnd);
-				painter->operate(hWnd,shape,hdc,first,lParam);
-				/*hdc = GetDC(hWnd);
-				if (shape == 5){
-					ClippingLines(hdc, RGB(0, 100, 200), lParam);
-				}
-				else if (shape == 1){
-					Shape* circle = new Circle(hdc, 1, { LOWORD(first), HIWORD(first) }, { LOWORD(lParam), HIWORD(lParam) });
-					circle->draw(RGB(0, 244, 255));
-				}
-				else if (shape == 2){
-					Shape* circle = new Circle(hdc, 2, { LOWORD(first), HIWORD(first) }, { LOWORD(lParam), HIWORD(lParam) });
-					circle->draw(RGB(0, 100, 255));
-				}
-				else if (shape == 6)
-				{
-					Shape* circle = new Circle(hdc, 3, { LOWORD(first), HIWORD(first) }, { LOWORD(lParam), HIWORD(lParam) });
-					circle->draw(RGB(255, 0, 0));
-				}
-				else if (shape == 3)
-				{
-					Point start = { LOWORD(first), HIWORD(first) };
-					Point end = { LOWORD(lParam), HIWORD(lParam) };
-					lines.push_back(start);
-					lines.push_back(end);
-					Shape* line = new Line(hdc, 1, { LOWORD(first), HIWORD(first) }, { LOWORD(lParam), HIWORD(lParam) });
-					line->draw(RGB(0, 100, 255));
-				}
-				else if (shape == 4)
-				{
-					Shape* line = new Line(hdc, 2, { LOWORD(first), HIWORD(first) }, { LOWORD(lParam), HIWORD(lParam) });
-					line->draw(RGB(0, 244, 255));
-				}
-
-				else if (shape == 7)
-				{
-					Shape* line = new Line(hdc, 3, { LOWORD(first), HIWORD(first) }, { LOWORD(lParam), HIWORD(lParam) });
-					line->draw(RGB(255, 0, 0));
-				}*/
+				painter->operate(hWnd,shape, hdc, first, NULL,pointsForCurve);
 			}
+		}
+		else
+		{
+			check = false;
+			hdc = GetDC(hWnd);
+			painter->operate(hWnd,shape,hdc,first,lParam,pointsForCurve);
+		}
 		break;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);

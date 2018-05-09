@@ -87,7 +87,6 @@
     <ClInclude Include="Header.h" />
     <ClInclude Include="line.h" />
     <ClInclude Include="menu.h" />
-    <ClInclude Include="Operations.h" />
     <ClInclude Include="Painter.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Shape.h" />
@@ -102,7 +101,6 @@
     <ClCompile Include="Curves.cpp" />
     <ClCompile Include="Filling.cpp" />
     <ClCompile Include="line.cpp" />
-    <ClCompile Include="Operations.cpp" />
     <ClCompile Include="Painter.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="stdafx.cpp">

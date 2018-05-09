@@ -6,7 +6,7 @@ Painter::Painter()
 {
 }
  
-void Painter::operate(HWND hwnd,int shape,HDC hdc , LPARAM first,LPARAM lParam)
+void Painter::operate(HWND hwnd,int shape,HDC hdc , LPARAM first,LPARAM lParam,vector<LPARAM> &pointsForCurve)
 {
 	
 	this->hdc = hdc;
@@ -52,6 +52,16 @@ void Painter::operate(HWND hwnd,int shape,HDC hdc , LPARAM first,LPARAM lParam)
 		Filling* filling = new Filling(hwnd);
 		filling->fillBFS(hdc, { LOWORD(first), HIWORD(first) }, RGB(0, 0, 0));
 		//filling->fillWithRecursion(hdc, { LOWORD(first), HIWORD(first) }, RGB(0, 0, 0)); //Stack overflow
+	}
+	else if (shape == 9)
+	{
+		Shape* curve = new Curves(pointsForCurve, 1, hdc);
+		curve->draw(RGB(0, 0, 255));
+	}
+	else if (shape == 10)
+	{
+		Shape* curve = new Curves(pointsForCurve, 2, hdc);
+		curve->draw(RGB(0, 0, 0));
 	}
 }
 

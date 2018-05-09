@@ -7,7 +7,11 @@ MENUITEM "&Circle Cartesian", Circle_Cartesian
 MENUITEM "&Circle MidPoint", Circle_MidPoint
 MENUITEM "&Circle_Polar", Circle_Polar
 END
-
+POPUP "&Curves"
+BEGIN
+MENUITEM "&Hermit curves", Curve_Hermit
+MENUITEM "&Bezier curves", Curve_Bezier
+END
 POPUP "&Line"
 BEGIN
 MENUITEM "&Direct Line", Line_Cartesian

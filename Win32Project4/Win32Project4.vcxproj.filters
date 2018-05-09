@@ -54,9 +54,6 @@
     <ClInclude Include="Painter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Operations.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Clipping.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -87,9 +84,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Painter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Operations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Clipping.cpp">
