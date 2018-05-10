@@ -88,6 +88,7 @@
     <ClInclude Include="line.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="Painter.h" />
+    <ClInclude Include="polygen.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="stdafx.h" />
@@ -102,6 +103,7 @@
     <ClCompile Include="Filling.cpp" />
     <ClCompile Include="line.cpp" />
     <ClCompile Include="Painter.cpp" />
+    <ClCompile Include="polygen.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -12,6 +12,10 @@ BEGIN
 MENUITEM "&Hermit curves", Curve_Hermit
 MENUITEM "&Bezier curves", Curve_Bezier
 END
+POPUP "&Polygon"
+BEGIN
+MENUITEM "&Quadrilateral polygon", Polygon_Draw
+END
 POPUP "&Line"
 BEGIN
 MENUITEM "&Direct Line", Line_Cartesian
@@ -25,5 +29,6 @@ END
 POPUP "&Clipping"
 BEGIN
 MENUITEM "&Line Clipping", Line_Clipping
+MENUITEM "&Polygon Clipping", Line_Clipping
 END
 END

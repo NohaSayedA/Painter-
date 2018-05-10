@@ -175,12 +175,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case Curve_Bezier:
 			shape = 10;
 			break;
+		case Polygon_Clipping:
+			shape = 11;
+			break;
+		case Polygon_Draw:
+			shape = 12;
+			break;
 		}
 		break;
 
 	case WM_LBUTTONDOWN:
 		
-		if (shape == 9||shape==10)
+		if (shape == 9||shape==10||shape==12)
 		{
 			pointsForCurve.push_back(lParam);
 			if (pointsForCurve.size() == 4)
