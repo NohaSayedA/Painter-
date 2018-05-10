@@ -1,6 +1,12 @@
 #include "menu.h"
 IDR_MYMENU MENU
 BEGIN
+POPUP "&File"
+BEGIN
+MENUITEM "&Save", Save_ID
+MENUITEM "&Load", Load_ID
+MENUITEM "&Close",Close
+END
 POPUP "&Circle"
 BEGIN
 MENUITEM "&Circle Cartesian", Circle_Cartesian

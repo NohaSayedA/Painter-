@@ -1,4 +1,6 @@
 #define IDR_MYMENU 1240
+#define Save_ID 100
+#define Load_ID 200
 #define Circle_ID 1250
 #define Clipping_ID 1400
 #define Line_Clipping 1450
@@ -13,4 +15,5 @@
 #define Curve_Bezier 1302
 #define Polygon_Clipping 1451
 #define Line_Cartesian 1222
+#define Close 120
 #define Line_MidPoint 1300

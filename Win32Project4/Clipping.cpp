@@ -106,7 +106,56 @@ void Clipping:: ClippingLines(COLORREF color,LPARAM first, LPARAM lparam,vector<
 		lines.push_back(line);
 	}
 }
-
+void Clipping::ClippingPolygons(COLORREF color, LPARAM first, LPARAM lparam, vector<Shape*>& polygons)
+{
+	int left = LOWORD(first);
+	int right = LOWORD(lparam);
+	int top = HIWORD(first);
+	int bottom = HIWORD(lparam);
+	int size = polygons.size();
+	while (size)
+	{
+		Shape* polygon = polygons.front();
+		polygons.erase(polygons.begin());
+		size--;
+		polygon->draw(RGB(255, 255, 255));
+		/*polygon = ClippingPolygon(color, line, left, right, top, bottom);
+		if (line == NULL)
+			continue;
+		lines.push_back(line);*/
+	}
+}
+/*
+Vertex Clipping:: VIntersect(Vertex& v1, Vertex& v2, int xedge)
+{
+	Vertex res;
+	res.x = xedge;
+	res.y = v1.y + (xedge - v1.x)*(v2.y - v1.y) / (v2.x - v1.x);
+	return res;
+}
+Vertex Clipping:: HIntersect(Vertex& v1, Vertex& v2, int yedge)
+{
+	Vertex res;
+	res.y = yedge;
+	res.x = v1.x + (yedge - v1.y)*(v2.x - v1.x) / (v2.y - v1.y);
+	return res;
+}
+bool Clipping:: InLeft(Vertex& v, int edge)
+{
+	return v.x >= edge;
+}
+bool Clipping:: InRight(Vertex& v, int edge)
+{
+	return v.x <= edge;
+}
+bool Clipping:: InTop(Vertex& v, int edge)
+{
+	return v.y >= edge;
+}
+bool Clipping:: InBottom(Vertex& v, int edge)
+{
+	return v.y <= edge;
+}*/
 Clipping::~Clipping()
 {
 }

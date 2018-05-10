@@ -86,6 +86,7 @@
     <ClInclude Include="Filling.h" />
     <ClInclude Include="Header.h" />
     <ClInclude Include="line.h" />
+    <ClInclude Include="Load.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="Painter.h" />
     <ClInclude Include="polygen.h" />
@@ -102,6 +103,7 @@
     <ClCompile Include="Curves.cpp" />
     <ClCompile Include="Filling.cpp" />
     <ClCompile Include="line.cpp" />
+    <ClCompile Include="Load.cpp" />
     <ClCompile Include="Painter.cpp" />
     <ClCompile Include="polygen.cpp" />
     <ClCompile Include="Shape.cpp" />

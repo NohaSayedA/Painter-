@@ -181,11 +181,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case Polygon_Draw:
 			shape = 12;
 			break;
+		case Save_ID:
+			shape = 13;
+			break; 
+		case Load_ID:
+			shape = 14;
+			break;
+		case Close:
+			PostQuitMessage(0);
 		}
 		break;
 
 	case WM_LBUTTONDOWN:
-		
+		if (shape == 13 || shape == 14)
+		{
+			hdc = GetDC(hWnd);
+			painter->operate(hWnd, shape, hdc, NULL, NULL, pointsForCurve);
+		}
 		if (shape == 9||shape==10||shape==12)
 		{
 			pointsForCurve.push_back(lParam);
